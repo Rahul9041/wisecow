@@ -1,15 +1,17 @@
-FROM ubuntu:20.04
+FROM debian:bullseye
 
 WORKDIR /app
 
-# Ensure apt update first
 RUN apt-get update && \
-    apt-get install -y fortune-mod cowsay && \
+    apt-get install -y bash fortune cowsay netcat-openbsd && \
     rm -rf /var/lib/apt/lists/*
 
+# ✅ Add /usr/games to PATH (so cowsay & fortune work)
+ENV PATH="/usr/games:${PATH}"
+
 COPY . /app
+RUN chmod +x /app/wisecow.sh
 
 EXPOSE 4499
-
-CMD ["./wisecow.sh"]
+ENTRYPOINT ["/app/wisecow.sh"]
 
